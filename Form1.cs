@@ -150,7 +150,7 @@ namespace Loaf_Drawing_Program
 
         private void eraser_button_click(object sender, EventArgs e)
         {
-            pen.Color = BackColor;
+            pen.Color = canvasPanel.BackColor;
             cursorMode = CursorMode.Eraser;
         }
 
