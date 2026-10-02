@@ -195,35 +195,35 @@ namespace Loaf_Drawing_Program
             e.Graphics.DrawImage(surface, 0, 0);
         }
 
-        private void canvas_MouseScroll(object sender, ScrollEventArgs e)
-        {
-            Debug.Print("zoom");
+        //private void canvas_MouseScroll(object sender, ScrollEventArgs e)
+        //{
+        //    Debug.Print("zoom");
 
-            if (ModifierKeys == Keys.Control)
-            {
-                if (CanvasZoom(e.OldValue < e.NewValue))
-                {
-                    canvasPanel.Invalidate();
-                    Debug.Print("zoom");
-                }
-            }
-        }
+        //    if (ModifierKeys == Keys.Control)
+        //    {
+        //        if (CanvasZoom(e.OldValue < e.NewValue))
+        //        {
+        //            canvasPanel.Invalidate();
+        //            Debug.Print("zoom");
+        //        }
+        //    }
+        //}
 
-        private void canvasPanel_MouseWheel(object sender, MouseEventArgs e)
-        {
-            Debug.Print("zoom " + zoom);
+        //private void canvasPanel_MouseWheel(object sender, MouseEventArgs e)
+        //{
+        //    Debug.Print("zoom " + zoom);
 
-            if (ModifierKeys == Keys.Control)
-            {
-                bool zoomIn = e.Delta > 0;
+        //    if (ModifierKeys == Keys.Control)
+        //    {
+        //        bool zoomIn = e.Delta > 0;
 
-                if (CanvasZoom(zoomIn))
-                {
-                    canvasPanel.Invalidate();
-                    Debug.Print("zoom " + zoom);
-                }
-            }
-        }
+        //        if (CanvasZoom(zoomIn))
+        //        {
+        //            canvasPanel.Invalidate();
+        //            Debug.Print("zoom " + zoom);
+        //        }
+        //    }
+        //}
 
 
         // methods/functions

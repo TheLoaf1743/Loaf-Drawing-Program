@@ -204,7 +204,6 @@
             this.canvasPanel.Name = "canvasPanel";
             this.canvasPanel.Size = new System.Drawing.Size(1460, 808);
             this.canvasPanel.TabIndex = 1;
-            this.canvasPanel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.canvas_MouseScroll);
             this.canvasPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.canvasPanel_Paint);
             this.canvasPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
             this.canvasPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
