@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -42,22 +43,27 @@ namespace Loaf_Drawing_Program
         public Point current = new Point();
         public Point old = new Point();
 
-        public Graphics g;
+        //public Graphics g;
         public Graphics graph;
 
         public Pen pen = new Pen(Color.Black, 5);
 
         public CursorMode cursorMode = CursorMode.Brush; //Keep track of current mode to adapt 
-
+        public float pb_size = 1;
+        public float eb_size = 3;
 
         Bitmap surface;
+
+        float zoom = 1;
 
         public Form1()
         {
             InitializeComponent();
 
-            g = canvasPanel.CreateGraphics();
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            canvasPanel.Paint += canvasPanel_Paint;
+
+            //g = canvasPanel.CreateGraphics();
+            //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
             pen.SetLineCap(System.Drawing.Drawing2D.LineCap.Round, System.Drawing.Drawing2D.LineCap.Round, System.Drawing.Drawing2D.DashCap.Round);
 
@@ -65,8 +71,8 @@ namespace Loaf_Drawing_Program
 
             graph = Graphics.FromImage(surface);
 
-            canvasPanel.BackgroundImage = surface;
-            canvasPanel.BackgroundImageLayout = ImageLayout.None;
+            //canvasPanel.BackgroundImage = surface;
+            //canvasPanel.BackgroundImageLayout = ImageLayout.None;
 
             pen.Width = (float)brush_size.Value;
         }
@@ -79,42 +85,13 @@ namespace Loaf_Drawing_Program
         {
             if (e.Button == MouseButtons.Left)
             {
-                current = e.Location;
-                g.DrawLine(pen, old, current);
-                graph.DrawLine(pen, old, current);
+                PointF oldScaled = ToBitmapCoords(old);
+                PointF curScaled = ToBitmapCoords(e.Location);
 
-                //if (cursorMode == CursorMode.Brush)
-                //{
+                graph.DrawLine(pen, oldScaled, curScaled);
 
-
-                //}
-                //else
-                //{
-
-
-                //    //Below -> code from ai. Commented because it feels too complicated for erasing, and either way layers
-                //    //         aren't implemented yet, so I can just draw using the background color.
-                //    //         As I am typing this, I realise that changing the bg color will cause issues with this idea.
-                //    //         I'll look into solving this issue asap
-
-                //    //using (var gfx = Graphics.FromImage(surface))
-                //    //{
-                //    //    gfx.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-
-                //    //    using (var erasePen = new Pen(BackColor, pen.Width))
-                //    //    {
-                //    //        erasePen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
-                //    //        erasePen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-
-                //    //        gfx.DrawLine(erasePen, old, current);
-                //    //    }
-                //    //}
-
-                //    //Update the visible canvas
-                //    //canvasPanel.Invalidate();
-                //}
-                old = current;
-
+                old = e.Location;
+                canvasPanel.Invalidate();
             }
         }
 
@@ -152,12 +129,16 @@ namespace Loaf_Drawing_Program
         {
             pen.Color = canvasPanel.BackColor;
             cursorMode = CursorMode.Eraser;
+            brush_size.Value = (decimal) eb_size;
+            pen.Width = eb_size;
         }
 
         private void paintbrush_button_click(object sender, EventArgs e)
         {
             pen.Color = colorbox.BackColor;
             cursorMode = CursorMode.Brush;
+            brush_size.Value = (decimal)pb_size;
+            pen.Width = pb_size;
         }
 
         private void colorbox_Click(object sender, EventArgs e)
@@ -184,7 +165,7 @@ namespace Loaf_Drawing_Program
         {
             SaveFileDialog sfd = new SaveFileDialog();
 
-            sfd.Filter = "Png Files (*png) ! *.png";
+            sfd.Filter = "Png Files (*png) | *.png";
             sfd.DefaultExt = "png";
             sfd.AddExtension = true;
 
@@ -197,11 +178,73 @@ namespace Loaf_Drawing_Program
         private void brushsize_change(object sender, EventArgs e)
         {
             pen.Width = (float)brush_size.Value;
+
+            if (cursorMode == CursorMode.Brush)
+                pb_size = pen.Width;
+            else
+                eb_size = pen.Width;
         }
 
         private void bg_color_button_click(object sender, EventArgs e)
         {
 
+        }
+        private void canvasPanel_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.ScaleTransform(zoom, zoom);
+            e.Graphics.DrawImage(surface, 0, 0);
+        }
+
+        private void canvas_MouseScroll(object sender, ScrollEventArgs e)
+        {
+            Debug.Print("zoom");
+
+            if (ModifierKeys == Keys.Control)
+            {
+                if (CanvasZoom(e.OldValue < e.NewValue))
+                {
+                    canvasPanel.Invalidate();
+                    Debug.Print("zoom");
+                }
+            }
+        }
+
+        private void canvasPanel_MouseWheel(object sender, MouseEventArgs e)
+        {
+            Debug.Print("zoom " + zoom);
+
+            if (ModifierKeys == Keys.Control)
+            {
+                bool zoomIn = e.Delta > 0;
+
+                if (CanvasZoom(zoomIn))
+                {
+                    canvasPanel.Invalidate();
+                    Debug.Print("zoom " + zoom);
+                }
+            }
+        }
+
+
+        // methods/functions
+        public bool CanvasZoom(bool zoomIn) // To change -> It's VERY badly coded right now
+        {
+            if (zoomIn && zoom < 5)
+            {
+                zoom += 0.1f;
+                return true;
+            }
+                
+            else if (!zoomIn && zoom > 0.1f)
+            {
+                zoom -= 0.1f;
+                return true;
+            }
+            return false;
+        }
+        PointF ToBitmapCoords(Point p)
+        {
+            return new PointF(p.X / zoom, p.Y / zoom);
         }
     }
     public enum CursorMode
@@ -209,4 +252,13 @@ namespace Loaf_Drawing_Program
         Brush, //Normal paint brush tool
         Eraser, //Normal eraser tool
     }
+    public class DoubleBufferedPanel : Panel
+    {
+        public DoubleBufferedPanel()
+        {
+            this.DoubleBuffered = true;
+            this.ResizeRedraw = true;
+        }
+    }
+
 }

@@ -30,26 +30,26 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.TopPanel = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.close_button = new System.Windows.Forms.Button();
             this.clear_button = new System.Windows.Forms.Button();
             this.save_button = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.canvasPanel = new System.Windows.Forms.Panel();
             this.ToolboxPanel = new System.Windows.Forms.Panel();
             this.colorbox = new System.Windows.Forms.PictureBox();
             this.brush_size = new System.Windows.Forms.NumericUpDown();
             this.eraser_button = new System.Windows.Forms.PictureBox();
             this.paintbrush_button = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.canvasPanel = new Loaf_Drawing_Program.DoubleBufferedPanel();
             this.TopPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.ToolboxPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.colorbox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.brush_size)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.eraser_button)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.paintbrush_button)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // TopPanel
@@ -64,15 +64,35 @@
             this.TopPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.TopPanel.Location = new System.Drawing.Point(0, 0);
             this.TopPanel.Name = "TopPanel";
-            this.TopPanel.Size = new System.Drawing.Size(1318, 42);
+            this.TopPanel.Size = new System.Drawing.Size(1460, 42);
             this.TopPanel.TabIndex = 0;
             this.TopPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseDown);
             this.TopPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseMove);
             this.TopPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TopPanel_MouseUp);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(113, 10);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(30, 26);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "BG\r\ncolor";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label1.Click += new System.EventHandler(this.bg_color_button_click);
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Location = new System.Drawing.Point(109, 3);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(39, 39);
+            this.pictureBox2.TabIndex = 4;
+            this.pictureBox2.TabStop = false;
+            this.pictureBox2.Click += new System.EventHandler(this.bg_color_button_click);
+            // 
             // close_button
             // 
-            this.close_button.Location = new System.Drawing.Point(1278, 12);
+            this.close_button.Location = new System.Drawing.Point(1425, 10);
             this.close_button.Name = "close_button";
             this.close_button.Size = new System.Drawing.Size(25, 23);
             this.close_button.TabIndex = 3;
@@ -81,7 +101,7 @@
             // 
             // clear_button
             // 
-            this.clear_button.Location = new System.Drawing.Point(1197, 12);
+            this.clear_button.Location = new System.Drawing.Point(1344, 10);
             this.clear_button.Name = "clear_button";
             this.clear_button.Size = new System.Drawing.Size(75, 23);
             this.clear_button.TabIndex = 2;
@@ -91,7 +111,7 @@
             // 
             // save_button
             // 
-            this.save_button.Location = new System.Drawing.Point(1116, 12);
+            this.save_button.Location = new System.Drawing.Point(1263, 10);
             this.save_button.Name = "save_button";
             this.save_button.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.save_button.Size = new System.Drawing.Size(75, 23);
@@ -110,17 +130,6 @@
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
-            // canvasPanel
-            // 
-            this.canvasPanel.BackColor = System.Drawing.Color.RosyBrown;
-            this.canvasPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.canvasPanel.Location = new System.Drawing.Point(0, 42);
-            this.canvasPanel.Name = "canvasPanel";
-            this.canvasPanel.Size = new System.Drawing.Size(1318, 622);
-            this.canvasPanel.TabIndex = 1;
-            this.canvasPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
-            this.canvasPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
-            // 
             // ToolboxPanel
             // 
             this.ToolboxPanel.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -131,7 +140,7 @@
             this.ToolboxPanel.Dock = System.Windows.Forms.DockStyle.Left;
             this.ToolboxPanel.Location = new System.Drawing.Point(0, 42);
             this.ToolboxPanel.Name = "ToolboxPanel";
-            this.ToolboxPanel.Size = new System.Drawing.Size(83, 622);
+            this.ToolboxPanel.Size = new System.Drawing.Size(83, 808);
             this.ToolboxPanel.TabIndex = 2;
             // 
             // colorbox
@@ -187,31 +196,24 @@
             this.paintbrush_button.TabStop = false;
             this.paintbrush_button.Click += new System.EventHandler(this.paintbrush_button_click);
             // 
-            // pictureBox2
+            // canvasPanel
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(109, 3);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(39, 39);
-            this.pictureBox2.TabIndex = 4;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.bg_color_button_click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(113, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(30, 26);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "BG\r\ncolor";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label1.Click += new System.EventHandler(this.bg_color_button_click);
+            this.canvasPanel.BackColor = System.Drawing.Color.RosyBrown;
+            this.canvasPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.canvasPanel.Location = new System.Drawing.Point(0, 42);
+            this.canvasPanel.Name = "canvasPanel";
+            this.canvasPanel.Size = new System.Drawing.Size(1460, 808);
+            this.canvasPanel.TabIndex = 1;
+            this.canvasPanel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.canvas_MouseScroll);
+            this.canvasPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.canvasPanel_Paint);
+            this.canvasPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
+            this.canvasPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseMove);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1318, 664);
+            this.ClientSize = new System.Drawing.Size(1460, 850);
             this.Controls.Add(this.ToolboxPanel);
             this.Controls.Add(this.canvasPanel);
             this.Controls.Add(this.TopPanel);
@@ -219,13 +221,13 @@
             this.Text = "Form1";
             this.TopPanel.ResumeLayout(false);
             this.TopPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ToolboxPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.colorbox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.brush_size)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.eraser_button)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.paintbrush_button)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -233,7 +235,8 @@
         #endregion
 
         private System.Windows.Forms.Panel TopPanel;
-        private System.Windows.Forms.Panel canvasPanel;
+        private Loaf_Drawing_Program.DoubleBufferedPanel canvasPanel;
+
         private System.Windows.Forms.Panel ToolboxPanel;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button close_button;
